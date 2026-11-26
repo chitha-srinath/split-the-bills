@@ -8,6 +8,17 @@ import { useForm } from "@tanstack/react-form";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { createColumnHelper, tableFeatures, useTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import {
+  ArrowRight,
+  BarChart3,
+  Check,
+  Plus,
+  ReceiptText,
+  ShieldCheck,
+  Sparkles,
+  Users,
+  WalletCards,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { authClient } from "../lib/auth-client";
 
@@ -37,6 +48,79 @@ const columns = columnHelper.columns([
     cell: ({ getValue }) => currency.format(getValue()),
   }),
 ]);
+
+function LandingPreview() {
+  return (
+    <div className="relative mx-auto w-full max-w-lg lg:mx-0">
+      <div className="rotate-1 rounded-xl border bg-card/90 p-3 shadow-xl backdrop-blur transition-transform duration-500 hover:rotate-0">
+        <div className="rounded-lg border bg-background/70 p-5 sm:p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Weekend in Goa</p>
+              <p className="mt-1 text-3xl font-black tracking-tight">₹12,480</p>
+            </div>
+            <span className="grid size-11 place-items-center rounded-2xl bg-emerald-500/10 text-emerald-600">
+              <ShieldCheck className="size-6" />
+            </span>
+          </div>
+
+          <div className="mt-7 space-y-3">
+            {[
+              ["Beach house", "₹7,200", "bg-violet-500"],
+              ["Dinner", "₹3,280", "bg-cyan-500"],
+              ["Taxi", "₹2,000", "bg-amber-500"],
+            ].map(([name, amount, color]) => (
+              <div className="flex items-center gap-3 rounded-xl border bg-card p-3" key={name}>
+                <span className={`size-2.5 rounded-full ${color}`} />
+                <span className="font-medium">{name}</span>
+                <span className="ml-auto font-bold">{amount}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-2xl bg-primary p-4 text-primary-foreground">
+            <div className="flex items-center justify-between text-sm opacity-80">
+              <span>Split between 4 friends</span>
+              <Users className="size-4" />
+            </div>
+            <div className="mt-2 flex items-end justify-between">
+              <span className="font-medium">Each person pays</span>
+              <span className="text-2xl font-black">₹3,120</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute -bottom-5 -left-4 flex items-center gap-2 rounded-xl border bg-card px-3 py-2 text-sm font-semibold shadow-lg sm:-left-8">
+        <span className="grid size-7 place-items-center rounded-full bg-emerald-500/10 text-emerald-600">
+          <Check className="size-4" />
+        </span>
+        Everyone is settled
+      </div>
+    </div>
+  );
+}
+
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof ReceiptText;
+  label: string;
+  value: string;
+}) {
+  return (
+    <article className="flex items-center gap-4 rounded-2xl border bg-card/80 p-5 shadow-sm">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+        <Icon className="size-5" />
+      </span>
+      <div className="min-w-0">
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="truncate text-xl font-black tracking-tight">{value}</p>
+      </div>
+    </article>
+  );
+}
 
 function HomePage() {
   const { data: session, isPending: sessionPending } = authClient.useSession();
@@ -74,32 +158,105 @@ function HomePage() {
 
   if (!session) {
     return (
-      <section className="mx-auto max-w-2xl py-16 text-center">
-        <p className="font-semibold text-primary">Simple, fair, transparent</p>
-        <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-          Split expenses without the awkward maths.
-        </h2>
-        <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
-          Create bills, divide costs among friends, and keep every shared expense in one place.
-        </p>
-        <Link
-          to="/auth"
-          className="mt-8 inline-flex min-h-11 items-center rounded-md bg-primary px-5 font-semibold text-primary-foreground hover:no-underline hover:opacity-90"
-        >
-          Get started
-        </Link>
-      </section>
+      <div className="pb-10">
+        <section className="grid items-center gap-14 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-sm font-semibold text-primary">
+              <Sparkles className="size-4" />
+              Shared expenses, finally made simple
+            </div>
+            <h2 className="mt-6 text-balance text-5xl font-black tracking-[-0.045em] sm:text-6xl lg:text-7xl">
+              Split the bill.
+              <span className="block text-primary">Keep the friendship.</span>
+            </h2>
+            <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-muted-foreground sm:text-xl">
+              From chai runs to group getaways, Splitly keeps every expense clear, fair, and
+              effortlessly organized.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/auth"
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 font-bold text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-0.5 hover:no-underline hover:shadow-primary/30"
+              >
+                Start splitting free
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <a
+                href="#how-it-works"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border bg-card/70 px-6 font-semibold text-foreground transition-colors hover:bg-muted hover:no-underline"
+              >
+                See how it works
+              </a>
+            </div>
+            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+              {["No spreadsheets", "Fair splits", "Secure by default"].map((item) => (
+                <span className="flex items-center gap-1.5" key={item}>
+                  <Check className="size-4 text-emerald-500" /> {item}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <LandingPreview />
+        </section>
+
+        <section id="how-it-works" className="grid gap-4 scroll-mt-24 sm:grid-cols-3">
+          {[
+            [ReceiptText, "Add the expense", "Record the total and what it was for in seconds."],
+            [Users, "Choose your people", "Add everyone involved and split the amount evenly."],
+            [
+              BarChart3,
+              "Stay in the clear",
+              "See recent spending and every bill in one tidy view.",
+            ],
+          ].map(([Icon, title, copy], index) => {
+            const FeatureIcon = Icon as typeof ReceiptText;
+            return (
+              <article
+                className="rounded-2xl border bg-card/70 p-6 shadow-sm backdrop-blur transition-all hover:-translate-y-1 hover:shadow-lg"
+                key={title as string}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
+                    <FeatureIcon className="size-5" />
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground">0{index + 1}</span>
+                </div>
+                <h3 className="mt-5 text-lg font-bold">{title as string}</h3>
+                <p className="mt-2 leading-6 text-muted-foreground">{copy as string}</p>
+              </article>
+            );
+          })}
+        </section>
+      </div>
     );
   }
 
+  const totalSpent = bills.reduce((total, bill) => total + bill.totalAmount, 0);
+  const peopleCount = new Set(bills.flatMap((bill) => bill.participants)).size;
+
   return (
     <div className="space-y-8">
-      <div>
-        <p className="text-sm font-semibold text-primary">Your workspace</p>
-        <h2 className="mt-1 text-3xl font-bold tracking-tight">Bill dashboard</h2>
-        <p className="mt-2 text-muted-foreground">
-          Add an expense and see how your shared spending is distributed.
-        </p>
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-semibold text-primary">Your workspace</p>
+          <h2 className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">Good to see you.</h2>
+          <p className="mt-2 text-muted-foreground">
+            Here is the latest picture of your shared spending.
+          </p>
+        </div>
+        <a
+          href="#new-bill"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-4 font-semibold text-primary-foreground hover:no-underline"
+        >
+          <Plus className="size-4" /> New bill
+        </a>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <StatCard icon={WalletCards} label="Total recorded" value={currency.format(totalSpent)} />
+        <StatCard icon={ReceiptText} label="Bills created" value={String(bills.length)} />
+        <StatCard icon={Users} label="People included" value={String(peopleCount)} />
       </div>
 
       {error && (
@@ -161,8 +318,19 @@ function BillForm({
   });
 
   return (
-    <section className="rounded-xl border bg-card p-5 shadow-sm">
-      <h3 className="text-lg font-semibold">Add a bill</h3>
+    <section
+      id="new-bill"
+      className="scroll-mt-24 rounded-2xl border bg-card/90 p-5 shadow-sm sm:p-6"
+    >
+      <div className="flex items-center gap-3">
+        <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
+          <Plus className="size-5" />
+        </span>
+        <div>
+          <h3 className="text-lg font-bold">Add a bill</h3>
+          <p className="text-sm text-muted-foreground">Split a new shared expense.</p>
+        </div>
+      </div>
       <form
         className="mt-4 space-y-4"
         onSubmit={(event) => {
@@ -316,7 +484,7 @@ function SpendingChart({ bills }: { bills: Bill[] }) {
   );
 
   return (
-    <section className="min-w-0 rounded-xl border bg-card p-5 shadow-sm">
+    <section className="min-w-0 rounded-2xl border bg-card/90 p-5 shadow-sm sm:p-6">
       <h3 className="text-lg font-semibold">Recent spending</h3>
       <p className="text-sm text-muted-foreground">Your eight most recent bills.</p>
       <div className="mt-4 h-72" aria-label="Bar chart of recent bill totals">
@@ -345,7 +513,7 @@ function BillsTable({ bills, loading }: { bills: Bill[]; loading: boolean }) {
   });
 
   return (
-    <section className="overflow-hidden rounded-xl border bg-card shadow-sm">
+    <section className="overflow-hidden rounded-2xl border bg-card/90 shadow-sm">
       <div className="border-b p-5">
         <h3 className="text-lg font-semibold">Bill history</h3>
         <p className="text-sm text-muted-foreground">
