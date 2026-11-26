@@ -1,0 +1,68 @@
+:root {
+  --color-primary-hover: color-mix(in oklch, var(--primary), black 12%);
+  --color-surface: var(--card);
+  --color-background: var(--background);
+  --color-text: var(--foreground);
+  --color-text-muted: var(--muted-foreground);
+  --color-error: var(--destructive);
+  --color-success: oklch(0.627 0.194 149.214);
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+.dark {
+  --color-primary-hover: color-mix(in oklch, var(--primary), white 12%);
+  --color-success: oklch(0.723 0.192 149.579);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

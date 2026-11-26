@@ -1,0 +1,26 @@
+{
+  "name": "bill-splitter",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Bill Splitter — monorepo with Vite + TanStack Router frontend and Fastify backend",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "dev:web": "pnpm --filter @bill-splitter/web dev",
+    "dev:api": "pnpm --filter @bill-splitter/api dev",
+    "build": "pnpm -r run build",
+    "build:web": "pnpm --filter @bill-splitter/web build",
+    "build:api": "pnpm --filter @bill-splitter/api build",
+    "lint": "oxlint --tsconfig ./tsconfig.base.json .",
+    "lint:fix": "oxlint --fix --tsconfig ./tsconfig.base.json .",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check .",
+    "typecheck": "pnpm -r run typecheck",
+    "clean": "pnpm -r run clean"
+  },
+  "devDependencies": {
+    "oxlint": "latest",
+    "oxfmt": "latest",
+    "typescript": "^7.0.0"
+  }
+}

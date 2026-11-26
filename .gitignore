@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+*.gen.ts
+.env
+.env.local
+.env.*.local
+*.log
+.aidd/
