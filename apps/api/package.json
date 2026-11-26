@@ -1,7 +1,7 @@
 {
   "name": "@bill-splitter/api",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -11,9 +11,14 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@better-auth/mongo-adapter": "^1.7.28",
     "@bill-splitter/shared": "workspace:*",
     "@fastify/cors": "latest",
-    "fastify": "latest"
+    "better-auth": "^1.7.28",
+    "dotenv": "^18.0.10",
+    "fastify": "latest",
+    "mongodb": "^7.9.1",
+    "mongoose": "^9.13.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.0",

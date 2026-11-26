@@ -1,7 +1,7 @@
 {
   "name": "@bill-splitter/web",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,8 +13,13 @@
   "dependencies": {
     "@bill-splitter/shared": "workspace:*",
     "@bill-splitter/ui": "workspace:*",
+    "@tanstack/charts": "^1.5.0",
+    "@tanstack/react-form": "^1.33.6",
     "@tanstack/react-router": "latest",
+    "@tanstack/react-table": "^9.3.1",
+    "@tanstack/react-virtual": "^3.14.28",
     "@tanstack/router-devtools": "latest",
+    "better-auth": "^1.7.28",
     "lucide-react": "^1.81.0",
     "react": "latest",
     "react-dom": "latest",

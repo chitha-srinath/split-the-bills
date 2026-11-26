@@ -1,28 +1,35 @@
-import Fastify from "fastify";
+import "dotenv/config";
 import cors from "@fastify/cors";
-import { healthRoute } from "./routes/health.js";
+import Fastify from "fastify";
+import { authClient } from "./auth.js";
+import { connectToDatabase, disconnectFromDatabase } from "./database.js";
+import { authRoute } from "./routes/auth.js";
 import { billsRoute } from "./routes/bills.js";
+import { healthRoute } from "./routes/health.js";
 
-const app = Fastify({
-  logger: true,
-});
+const app = Fastify({ logger: true });
 
-// Register plugins
 await app.register(cors, {
-  origin: true,
+  origin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
+  credentials: true,
 });
 
-// Register routes
+await app.register(authRoute);
 app.register(healthRoute, { prefix: "/api" });
 app.register(billsRoute, { prefix: "/api" });
 
-// Start server
+app.addHook("onClose", async () => {
+  await authClient.close();
+  await disconnectFromDatabase();
+});
+
 const start = async () => {
   try {
+    await connectToDatabase();
     await app.listen({ port: 3000, host: "0.0.0.0" });
-    console.log("🚀 Backend running at http://localhost:3000");
-  } catch (err) {
-    app.log.error(err);
+    app.log.info("Backend running at http://localhost:3000");
+  } catch (error) {
+    app.log.error(error);
     process.exit(1);
   }
 };

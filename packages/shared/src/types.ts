@@ -8,13 +8,6 @@ export interface Bill {
   createdAt: string;
 }
 
-/** Input for creating a new bill */
-export interface CreateBillInput {
-  title: string;
-  totalAmount: number;
-  participants: string[];
-}
-
 /** Standard API response wrapper */
 export interface ApiResponse<T> {
   data?: T;
