@@ -1,5 +1,22 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ArrowRight, Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { type FormEvent, useState } from "react";
+import { Button } from "@bill-splitter/ui/components/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@bill-splitter/ui/components/card";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from "@bill-splitter/ui/components/field";
+import { Input } from "@bill-splitter/ui/components/input";
 import { authClient } from "../lib/auth-client";
 
 export const Route = createFileRoute("/auth")({
@@ -11,6 +28,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,92 +72,112 @@ function AuthPage() {
   }
 
   return (
-    <section className="mx-auto max-w-md rounded-xl border bg-card p-6 shadow-sm">
-      <h2 className="text-2xl font-bold">
-        {mode === "sign-in" ? "Welcome back" : "Create your account"}
-      </h2>
-      <p className="mt-1 text-muted-foreground">
-        {mode === "sign-in"
-          ? "Sign in to manage your bills."
-          : "Start splitting expenses securely."}
-      </p>
+    <Card className="auth-card">
+      <CardHeader className="auth-card-header">
+        <span className="auth-lock" aria-hidden="true">
+          <LockKeyhole size={20} />
+        </span>
+        <CardTitle className="auth-title">
+          {mode === "sign-in" ? "Welcome back" : "Create your account"}
+        </CardTitle>
+        <CardDescription>
+          {mode === "sign-in"
+            ? "Sign in to continue to Splitly."
+            : "Start managing shared expenses."}
+        </CardDescription>
+      </CardHeader>
 
-      <button
-        className="mt-6 flex min-h-11 w-full items-center justify-center gap-3 rounded-md border bg-background px-4 font-semibold hover:bg-muted disabled:opacity-60"
-        type="button"
-        disabled={pending}
-        onClick={() => void handleGoogleSignIn()}
-      >
-        <GoogleIcon />
-        Continue with Google
-      </button>
-
-      <div className="my-5 flex items-center gap-3" aria-hidden="true">
-        <span className="h-px flex-1 bg-border" />
-        <span className="text-xs font-medium uppercase text-muted-foreground">or</span>
-        <span className="h-px flex-1 bg-border" />
-      </div>
-
-      <form className="space-y-4" onSubmit={handleSubmit}>
-        {mode === "sign-up" && (
-          <label className="block font-medium">
-            Name
-            <input
-              className="mt-1 min-h-11 w-full rounded-md border bg-background px-3"
-              name="name"
-              autoComplete="name"
-              required
-            />
-          </label>
-        )}
-        <label className="block font-medium">
-          Email
-          <input
-            className="mt-1 min-h-11 w-full rounded-md border bg-background px-3"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-          />
-        </label>
-        <label className="block font-medium">
-          Password
-          <input
-            className="mt-1 min-h-11 w-full rounded-md border bg-background px-3"
-            name="password"
-            type="password"
-            minLength={8}
-            autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-            required
-          />
-        </label>
-
-        {error && (
-          <p className="text-sm text-destructive" role="alert">
-            {error}
-          </p>
-        )}
-
-        <button
-          className="min-h-11 w-full rounded-md bg-primary px-4 font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
-          type="submit"
+      <CardContent>
+        <Button
+          className="auth-google"
+          variant="outline"
+          size="lg"
+          type="button"
           disabled={pending}
+          onClick={() => void handleGoogleSignIn()}
         >
-          {pending ? "Please wait…" : mode === "sign-in" ? "Sign in" : "Sign up"}
-        </button>
-      </form>
+          <GoogleIcon /> Continue with Google
+        </Button>
 
-      <button
-        className="mt-4 min-h-11 w-full text-sm font-medium text-primary"
-        type="button"
-        onClick={() => {
-          setMode(mode === "sign-in" ? "sign-up" : "sign-in");
-          setError("");
-        }}
-      >
-        {mode === "sign-in" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-      </button>
-    </section>
+        <FieldSeparator className="auth-divider">or</FieldSeparator>
+
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <FieldGroup>
+            {mode === "sign-up" && (
+              <Field>
+                <FieldLabel htmlFor="name">Full name</FieldLabel>
+                <Input
+                  className="auth-input"
+                  id="name"
+                  name="name"
+                  autoComplete="name"
+                  placeholder="Aarav Kumar"
+                  required
+                />
+              </Field>
+            )}
+            <Field>
+              <FieldLabel htmlFor="email">Email address</FieldLabel>
+              <Input
+                className="auth-input"
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                required
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <div className="auth-password">
+                <Input
+                  className="auth-input"
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  minLength={8}
+                  autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
+                  placeholder="At least 8 characters"
+                  required
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((value) => !value)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </Button>
+              </div>
+            </Field>
+          </FieldGroup>
+
+          {error && <FieldError className="auth-error">{error}</FieldError>}
+
+          <Button className="auth-submit" size="lg" type="submit" disabled={pending}>
+            {pending ? "Please wait…" : mode === "sign-in" ? "Sign in" : "Create account"}
+            {!pending && <ArrowRight size={18} />}
+          </Button>
+        </form>
+
+        <p className="auth-switch">
+          {mode === "sign-in" ? "No account?" : "Already registered?"}
+          <Button
+            variant="link"
+            size="sm"
+            type="button"
+            onClick={() => {
+              setMode(mode === "sign-in" ? "sign-up" : "sign-in");
+              setError("");
+            }}
+          >
+            {mode === "sign-in" ? "Sign up" : "Sign in"}
+          </Button>
+        </p>
+      </CardContent>
+    </Card>
   );
 }
 
