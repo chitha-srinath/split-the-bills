@@ -17,7 +17,11 @@
     "./pages/*": "./src/pages/*.tsx"
   },
   "scripts": {
+    "build": "node -e \"process.exit(0)\"",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "oxlint --tsconfig ./tsconfig.json .",
     "clean": "rimraf dist"
   },
   "dependencies": {

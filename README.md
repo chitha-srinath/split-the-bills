@@ -4,15 +4,16 @@ A monorepo application for splitting bills among friends and groups.
 
 ## Tech Stack
 
-| Layer       | Technology                       |
-| ----------- | -------------------------------- |
-| Web         | Vite + React + TanStack Router   |
-| API         | Fastify + TypeScript + Mongoose  |
-| Database    | MongoDB                          |
-| Shared      | Shared types & utilities package |
-| Linter      | oxlint                           |
-| Formatter   | oxfmt                            |
-| Package Mgr | pnpm (workspaces)                |
+| Layer                 | Technology                       |
+| --------------------- | -------------------------------- |
+| Web                   | Vite + React + TanStack Router   |
+| API                   | Fastify + TypeScript + Mongoose  |
+| Database              | MongoDB                          |
+| Shared                | Shared types & utilities package |
+| Build & Orchestration | Turborepo                        |
+| Linter                | oxlint                           |
+| Formatter             | oxfmt                            |
+| Package Mgr           | pnpm (workspaces)                |
 
 ## Project Structure
 
@@ -22,8 +23,10 @@ bill-splitter/
 │   ├── web/               # Vite + React + TanStack Router
 │   └── api/               # Fastify API server
 ├── packages/
-│   └── core/              # Shared types, constants, utilities
-├── package.json           # Root workspace config
+│   ├── core/              # Shared types, constants, utilities
+│   └── ui/                # Shared UI component library
+├── package.json           # Root workspace config (delegates to Turborepo)
+├── turbo.json             # Turborepo task pipeline & caching
 ├── pnpm-workspace.yaml    # pnpm workspace definition
 ├── tsconfig.base.json     # Shared TypeScript config
 ├── oxlint.config.ts       # Linter config
@@ -66,7 +69,25 @@ pnpm dev:api
 ### Build
 
 ```bash
+# Topological build orchestrated with caching by Turborepo
 pnpm build
+```
+
+### Test
+
+```bash
+# Parallel workspace tests orchestrated by Turborepo
+pnpm test
+
+# Test coverage across monorepo packages
+pnpm test:coverage
+```
+
+### Typecheck
+
+```bash
+# Typecheck all packages
+pnpm typecheck
 ```
 
 ### Lint & Format

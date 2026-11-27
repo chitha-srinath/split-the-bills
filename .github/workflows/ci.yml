@@ -33,3 +33,19 @@ jobs:
 
       - name: Run lint
         run: pnpm lint
+
+      - name: Run typecheck
+        run: pnpm typecheck
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Run build
+        run: pnpm build
+
+      - name: Validate AIDD state
+        run: |
+          if [ -f .aidd/state.yaml ]; then
+            python3 .aidd/framework/scripts/aidd-validate.py \
+              .aidd/framework/schemas/state.schema.json .aidd/state.yaml
+          fi

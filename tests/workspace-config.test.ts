@@ -6,15 +6,15 @@ import { execFileSync } from "node:child_process";
 describe("ST-001 Workspace Configuration & Tooling", () => {
   const rootDir = path.resolve(import.meta.dirname, "..");
 
-  it("1. root package.json enables ESM and topological workspace scripts while preserving turbo backups", () => {
+  it("1. root package.json enables ESM and delegates scripts to Turborepo orchestration", () => {
     const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, "package.json"), "utf-8"));
     expect(pkg.type).toBe("module");
-    expect(pkg.scripts?.build).toBe("pnpm -r --if-present --stream build");
+    expect(pkg.scripts?.build).toBe("turbo run build");
     expect(pkg.scripts?.["build:turbo"]).toBe("turbo run build");
-    expect(pkg.scripts?.typecheck).toBe("pnpm -r --if-present --stream typecheck");
+    expect(pkg.scripts?.typecheck).toBe("turbo run typecheck");
     expect(pkg.scripts?.["typecheck:turbo"]).toBe("turbo run typecheck");
-    expect(pkg.scripts?.test).toBe("vitest run");
-    expect(pkg.scripts?.["test:coverage"]).toBe("vitest run --coverage");
+    expect(pkg.scripts?.test).toBe("turbo run test");
+    expect(pkg.scripts?.["test:coverage"]).toBe("turbo run test:coverage");
     expect(pkg.scripts?.e2e).toBe("playwright test");
 
     const devDeps = pkg.devDependencies || {};
