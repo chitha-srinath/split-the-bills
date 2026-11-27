@@ -1,4 +1,4 @@
-import { createBillSchema, type Bill } from "@bill-splitter/shared";
+import { createBillSchema, type Bill } from "@bill-splitter/core";
 import type { FastifyInstance } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
 import { isValidObjectId } from "mongoose";

@@ -1,5 +1,5 @@
 {
-  "name": "@bill-splitter/shared",
+  "name": "@bill-splitter/core",
   "version": "0.0.0",
   "private": true,
   "type": "module",

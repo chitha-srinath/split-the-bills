@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.7.28",
-    "@bill-splitter/shared": "workspace:*",
+    "@bill-splitter/core": "workspace:*",
     "@fastify/cors": "latest",
     "better-auth": "^1.7.28",
     "dotenv": "^18.0.10",

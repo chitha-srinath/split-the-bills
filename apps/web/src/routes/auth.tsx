@@ -68,6 +68,7 @@ function AuthPage() {
     if (result.error) {
       setError(result.error.message ?? "Google sign-in failed");
       setPending(false);
+      return;
     }
   }
 

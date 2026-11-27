@@ -1,4 +1,4 @@
-import type { Bill } from "@bill-splitter/shared";
+import type { Bill } from "@bill-splitter/core";
 import { barY, defineChart } from "@tanstack/charts";
 import { Chart } from "@tanstack/charts/react";
 import { scaleBand } from "@tanstack/charts/scales/band";

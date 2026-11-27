@@ -22,7 +22,7 @@ bill-splitter/
 │   ├── web/               # Vite + React + TanStack Router
 │   └── api/               # Fastify API server
 ├── packages/
-│   └── shared/            # Shared types, constants, utilities
+│   └── core/              # Shared types, constants, utilities
 ├── package.json           # Root workspace config
 ├── pnpm-workspace.yaml    # pnpm workspace definition
 ├── tsconfig.base.json     # Shared TypeScript config
@@ -91,6 +91,6 @@ React SPA powered by Vite and TanStack Router for file-based routing.
 
 Fastify REST API server with TypeScript.
 
-### `@bill-splitter/shared`
+### `@bill-splitter/core`
 
 Shared TypeScript types, constants, and utility functions used by both apps.

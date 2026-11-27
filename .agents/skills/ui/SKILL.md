@@ -2,104 +2,143 @@
 name: ui
 description: >-
   Use this skill when building, designing, or modifying user interface components
-  for the Bill Splitter application. Covers layout, styling, accessibility,
-  responsiveness, component structure, theming, and UI best practices.
+  for the Bill Splitter application. Covers layout, styling, React 19 compiler,
+  TanStack Query skipToken, Intl formatting factory, guard clauses, and UI best practices.
   The frontend lives at apps/web/ and uses Vite + React + TanStack Router.
 ---
 
 # UI Skill — Bill Splitter
 
-Guidelines and procedures for building the user interface of the Bill Splitter app.
+Guidelines and architecture patterns for building the user interface of the Bill Splitter app.
 
 ## Project Context
 
 - **Framework:** React 19.3 with TypeScript 7
 - **Build Tool:** Vite 8 (Rolldown-based)
+- **React Compiler:** `@vitejs/plugin-react` with `compiler: true`
 - **Routing:** TanStack Router 1.170+ (file-based routing)
 - **Frontend Path:** `apps/web/`
 - **Routes Directory:** `apps/web/src/routes/`
-- **Shared Types:** `@bill-splitter/shared` workspace package
+- **Shared Types:** `@bill-splitter/core` workspace package
+- **Shared Components:** `@bill-splitter/ui` workspace package
 
-## TanStack Router Conventions
+---
 
-- Route files live in `apps/web/src/routes/`.
-- The root layout is `__root.tsx`.
-- Index routes use `index.tsx` inside the route directory.
-- The router plugin auto-generates `src/routeTree.gen.ts` — **never edit this file manually**.
-- Always import `createFileRoute` for file-based routes:
-  ```tsx
-  import { createFileRoute } from "@tanstack/react-router";
+## 1. Vite & React 19 Compiler Integration
 
-  export const Route = createFileRoute("/my-route")({
-    component: MyRouteComponent,
+To eliminate manual `useMemo` and `useCallback` boilerplate, the project uses the React 19 compiler in Vite:
+
+```ts
+// apps/web/vite.config.ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [
+    react({ compiler: true }), // Enables React 19 compiler
+  ],
+});
+```
+
+---
+
+## 2. TanStack Query: Use `skipToken` for Conditional Queries
+
+**Never use `enabled: !!param` for required query keys.** `enabled: !!param` fails to narrow the parameter type inside `queryFn` and still permits manual `refetch()` invocations.
+
+Use `skipToken` instead, which acts as a type-safe contract:
+
+```ts
+import { useQuery, skipToken } from "@tanstack/react-query";
+
+// ❌ ANTI-PATTERN: Looks protected, isn't (userId remains string | undefined)
+const queryBad = useQuery({
+  queryKey: ["user", userId],
+  queryFn: () => fetchUser(userId), // userId is not narrowed!
+  enabled: !!userId,
+});
+
+// ✅ RECOMMENDED: skipToken provides compile-time type narrowing
+const queryGood = useQuery({
+  queryKey: ["user", userId],
+  queryFn: userId ? () => fetchUser(userId) : skipToken,
+  // userId is guaranteed 'string' inside fetchUser
+  // query cannot accidentally be executed manually when skipped
+});
+```
+
+---
+
+## 3. Native `Intl` Formatter Factory
+
+Avoid external formatting libraries. Use the native `Intl` API factory pattern for locale-aware numbers, dates, lists, durations, and currencies:
+
+```ts
+export const createLocaleFormatter = (locale = "en-IN") => {
+  const currency = (cur: string) =>
+    new Intl.NumberFormat(locale, { style: "currency", currency: cur });
+
+  const compact = new Intl.NumberFormat(locale, {
+    notation: "compact",
+    maximumFractionDigits: 1,
   });
-  ```
 
-## Design Principles
+  const date = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
 
-1. **Clean & Minimal** — Keep the interface uncluttered. Each screen should serve
-   a single purpose (add bill, split summary, settlement view).
-2. **Mobile-First** — Design for small screens first, then scale up. Use
-   responsive units (`rem`, `%`, `vw/vh`) and CSS Grid / Flexbox.
-3. **Accessible** — All interactive elements must be keyboard-navigable, have
-   visible focus indicators, and use semantic HTML (`<button>`, `<label>`,
-   `<fieldset>`). Maintain a minimum contrast ratio of 4.5:1.
-4. **Consistent** — Reuse design tokens defined in `apps/web/src/index.css`.
+  const list = new Intl.ListFormat(locale, {
+    style: "long",
+    type: "conjunction",
+  });
 
-## Component Guidelines
+  const relativeTime = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
 
-### Structure
-- Keep components small and single-responsibility.
-- Separate presentational (UI-only) components from container (data-fetching /
-  state-managing) components.
-- Co-locate styles with their component.
+  const duration = new Intl.DurationFormat(locale, { style: "short" });
 
-### Naming
-- Use PascalCase for component file names (`BillCard.tsx`, `SplitSummary.tsx`).
-- Use kebab-case for CSS class names and design tokens (`--color-primary`,
-  `.bill-card`).
+  return {
+    formatCurrency: (n: number, cur = "INR") => currency(cur).format(n),
+    formatCompact: (n: number) => compact.format(n),
+    formatDate: (d: Date | string | number) => date.format(new Date(d)),
+    formatList: (items: string[]) => list.format(items),
+    formatRelativeTime: (n: number, unit: Intl.RelativeTimeFormatUnit) =>
+      relativeTime.format(n, unit),
+    formatDuration: (d: Record<string, number>) => duration.format(d),
+  };
+};
 
-### Forms & Inputs
-- Always pair `<input>` with a `<label>`.
-- Show inline validation messages next to the relevant field.
-- Use `inputmode="decimal"` for currency fields.
+export const formatters = createLocaleFormatter("en-IN");
+```
 
-## Design Tokens
+---
 
-Tokens are defined in [`apps/web/src/index.css`](file:///c:/sai/code%20practice/AI/Bill-splitter/apps/web/src/index.css):
+## 4. Control Flow: Guard Clauses & Fail-Fast (Avoid Pyramid of Doom)
 
-| Token                   | Value       |
-| ----------------------- | ----------- |
-| `--color-primary`       | `#4f46e5`   |
-| `--color-primary-hover` | `#4338ca`   |
-| `--color-surface`       | `#ffffff`   |
-| `--color-background`    | `#f9fafb`   |
-| `--color-text`          | `#111827`   |
-| `--color-text-muted`    | `#6b7280`   |
-| `--color-error`         | `#dc2626`   |
-| `--color-success`       | `#16a34a`   |
+- **Early returns for view states:** Return early for `sessionPending`, `!session`, empty lists, or errors instead of nesting ternary operators inside JSX.
+- **Fail fast in event handlers:** Check preconditions, validation, and API errors immediately at the top of handlers (`if (result.error) { setError(...); return; }`).
+- **Flat structure:** Keep the primary component render tree flat and unnested.
 
-## Responsive Breakpoints
+---
 
-| Name | Min Width | Typical Device |
-| ---- | --------- | -------------- |
-| `sm` | 640px     | Large phone    |
-| `md` | 768px     | Tablet         |
-| `lg` | 1024px    | Small laptop   |
-| `xl` | 1280px    | Desktop        |
+## 5. Streaming UI Responses
 
-## Accessibility Checklist
+When consuming backend response streams (e.g. AI bill scanning or real-time event updates), use native async iteration:
 
-- [ ] All images have meaningful `alt` text (or `alt=""` for decorative).
-- [ ] Color is never the sole indicator of state — pair with icons or text.
-- [ ] Interactive elements have `:focus-visible` styles.
-- [ ] Currency amounts are announced correctly by screen readers.
-- [ ] Touch targets are at least 44 × 44 px.
+```ts
+const response = await fetch("/api/stream", { method: "POST" });
+if (!response.ok || !response.body) {
+  throw new Error("Failed to start stream");
+}
 
-## Validation Steps
+for await (const chunk of response.body) {
+  handleStreamChunk(chunk);
+}
+```
 
-After making UI changes:
+---
 
-1. `pnpm dev:web` — verify the component renders correctly.
-2. Check responsive behavior at `sm`, `md`, and `lg` breakpoints.
-3. Tab through all interactive elements; confirm focus order is logical.
+## Development Commands
+
+```bash
+pnpm dev:web          # Start Vite dev server
+pnpm build:web        # Build for production (tsc -b && vite build)
+pnpm --filter @bill-splitter/web typecheck # Type check
+```
