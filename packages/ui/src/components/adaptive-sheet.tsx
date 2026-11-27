@@ -59,13 +59,18 @@ function AdaptiveSheet({
 }: AdaptiveSheetProps) {
   const isMobile = useIsMobile();
   const contextValue = React.useMemo(() => ({ isMobile }), [isMobile]);
+  const handleOpenChange = onOpenChange
+    ? (nextOpen: boolean) => {
+        onOpenChange(nextOpen);
+      }
+    : undefined;
 
   return (
     <AdaptiveSheetContext.Provider value={contextValue}>
       {isMobile ? (
         <Drawer
           open={open}
-          onOpenChange={onOpenChange}
+          onOpenChange={handleOpenChange}
           defaultOpen={defaultOpen}
           modal={modal}
           showSwipeHandle={showSwipeHandle}
@@ -74,7 +79,7 @@ function AdaptiveSheet({
           {children}
         </Drawer>
       ) : (
-        <Sheet open={open} onOpenChange={onOpenChange} defaultOpen={defaultOpen} modal={modal}>
+        <Sheet open={open} onOpenChange={handleOpenChange} defaultOpen={defaultOpen} modal={modal}>
           {children}
         </Sheet>
       )}
@@ -82,7 +87,7 @@ function AdaptiveSheet({
   );
 }
 
-function AdaptiveSheetTrigger(props: React.ComponentProps<typeof SheetTrigger>) {
+function AdaptiveSheetTrigger(props: React.ComponentProps<"button">) {
   const { isMobile } = useAdaptiveSheet();
   if (isMobile) {
     return <DrawerTrigger {...props} />;
@@ -90,7 +95,7 @@ function AdaptiveSheetTrigger(props: React.ComponentProps<typeof SheetTrigger>) 
   return <SheetTrigger {...props} />;
 }
 
-function AdaptiveSheetClose(props: React.ComponentProps<typeof SheetClose>) {
+function AdaptiveSheetClose(props: React.ComponentProps<"button">) {
   const { isMobile } = useAdaptiveSheet();
   if (isMobile) {
     return <DrawerClose {...props} />;
@@ -98,7 +103,10 @@ function AdaptiveSheetClose(props: React.ComponentProps<typeof SheetClose>) {
   return <SheetClose {...props} />;
 }
 
-type AdaptiveSheetContentProps = React.ComponentProps<typeof SheetContent>;
+type AdaptiveSheetContentProps = React.ComponentProps<"div"> & {
+  side?: "top" | "right" | "bottom" | "left";
+  showCloseButton?: boolean;
+};
 
 function AdaptiveSheetContent({
   className,
