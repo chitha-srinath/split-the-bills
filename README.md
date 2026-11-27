@@ -47,7 +47,7 @@ pnpm install
 Copy `.env.example` to `.env` and set `MONGODB_URI` for your MongoDB instance.
 Set `BETTER_AUTH_SECRET` to a securely generated value of at least 32 characters.
 For Google sign-in, create a Web OAuth client and set `GOOGLE_CLIENT_ID` and
-`GOOGLE_CLIENT_SECRET`. Register `http://localhost:3000/api/auth/callback/google`
+`GOOGLE_CLIENT_SECRET`. Register `http://localhost:4000/api/auth/callback/google`
 as an authorized redirect URI for local development.
 
 ### Development

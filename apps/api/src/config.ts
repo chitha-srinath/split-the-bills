@@ -12,18 +12,18 @@ dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 export const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  PORT: z.coerce.number().int().positive().default(3000),
+  PORT: z.coerce.number().int().positive().default(4000),
   HOST: z.string().default("0.0.0.0"),
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
   BETTER_AUTH_SECRET: z.string().min(32, "BETTER_AUTH_SECRET must contain at least 32 characters"),
   BETTER_AUTH_URL: z
     .string()
     .url("BETTER_AUTH_URL must be a valid URL")
-    .default("http://localhost:3000"),
+    .default("http://localhost:4000"),
   CLIENT_ORIGIN: z
     .string()
     .url("CLIENT_ORIGIN must be a valid URL")
-    .default("http://localhost:5173"),
+    .default("http://localhost:3000"),
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
   GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
 });
