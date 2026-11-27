@@ -288,6 +288,108 @@ for await (const chunk of res.body) {
 
 ---
 
+### Pattern H: Modern Temporal API (Calendar-Aware Date Math)
+
+Never use manual millisecond calculations (`1000 * 60 * 60 * 24`) or legacy mutable `Date` objects for calendar math, as they fail around daylight saving time (DST) shifts, leap seconds, and timezones. Use the `Temporal` API:
+
+```ts
+// ❌ ANTI-PATTERN: Manual millisecond math (breaks on DST transitions)
+const daysBetweenBad = Math.floor((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24));
+
+// ✅ RECOMMENDED: Temporal API (calendar-aware and timezone-safe)
+const start = Temporal.PlainDate.from("2026-03-01");
+const end = Temporal.PlainDate.from("2026-03-15");
+const diffDays = start.until(end).total({ unit: "days" }); // 14
+
+// Chaining date manipulations safely
+const deadline = Temporal.Now.zonedDateTimeISO("Asia/Kolkata")
+  .add({ days: 7, hours: 2 })
+  .round({ smallestUnit: "minute" });
+```
+
+---
+
+### Pattern I: Modern JavaScript Standard Primitives & Idioms
+
+Adopt modern standard JavaScript primitives to avoid legacy boilerplate or heavy third-party helper libraries:
+
+1. **Accessing Array Ends (`at(-1)`):**
+
+   ```ts
+   // ❌ const last = array[array.length - 1];
+   // ✅
+   const last = array.at(-1);
+   ```
+
+2. **Native Deep Cloning (`structuredClone`):**
+
+   ```ts
+   // ❌ const copy = JSON.parse(JSON.stringify(complexObj)); // drops dates, maps, sets, regex
+   // ✅
+   const copy = structuredClone(complexObj);
+   ```
+
+3. **URL Query Param Parsing (`Object.fromEntries`):**
+
+   ```ts
+   // ✅ Idiomatic, one-line query params object extraction
+   const params = Object.fromEntries(new URL(requestUrl).searchParams);
+   ```
+
+4. **Immutable Variable Declarations:**
+   Avoid uninitialized `let` declarations combined with multi-branch `if/else` reassignment. Prefer immediate initialization with ternary operators, helper functions, or object mapping:
+
+   ```ts
+   // ❌ ANTI-PATTERN: Uninitialized mutable variable
+   let statusText;
+   if (isSettled) {
+     statusText = "Settled";
+   } else {
+     statusText = "Pending";
+   }
+
+   // ✅ RECOMMENDED: Immediate const assignment
+   const statusText = isSettled ? "Settled" : "Pending";
+   ```
+
+5. **Padded Sequence / ID Generators:**
+   Use ES6 generator functions for isolated, state-encapsulated sequence creation:
+   ```ts
+   export function* idGen({ prefix = "BS-", start = 1, pad = 6 } = {}) {
+     let i = start;
+     while (true) {
+       yield `${prefix}${String(i++).padStart(pad, "0")}`;
+     }
+   }
+   ```
+
+---
+
+### Pattern J: Centralized Error Message Registry (`Map`)
+
+Store application error codes and customer-facing messages in an explicit, type-safe `Map` rather than spreading strings across codebase or giant switch statements:
+
+```ts
+export type ErrorCode =
+  | "ERR_SPLIT_EMPTY"
+  | "ERR_SPLIT_MISMATCH"
+  | "ERR_UNAUTHORIZED"
+  | "ERR_RATE_LIMITED";
+
+export const ERROR_MESSAGES = new Map<ErrorCode, string>([
+  ["ERR_SPLIT_EMPTY", "At least one participant is required to split a bill."],
+  ["ERR_SPLIT_MISMATCH", "Sum of individual shares must match total amount."],
+  ["ERR_UNAUTHORIZED", "Authentication required to access this resource."],
+  ["ERR_RATE_LIMITED", "Too many requests. Please wait a moment."],
+]);
+
+export function getErrorMessage(code: ErrorCode): string {
+  return ERROR_MESSAGES.get(code) ?? "An unexpected error occurred.";
+}
+```
+
+---
+
 ## 4. Verification Commands
 
 ```bash

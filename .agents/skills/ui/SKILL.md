@@ -98,6 +98,8 @@ export const createLocaleFormatter = (locale = "en-IN") => {
     formatCurrency: (n: number, cur = "INR") => currency(cur).format(n),
     formatCompact: (n: number) => compact.format(n),
     formatDate: (d: Date | string | number) => date.format(new Date(d)),
+    formatDateRange: (start: Date | string | number, end: Date | string | number) =>
+      date.formatRange(new Date(start), new Date(end)),
     formatList: (items: string[]) => list.format(items),
     formatRelativeTime: (n: number, unit: Intl.RelativeTimeFormatUnit) =>
       relativeTime.format(n, unit),
