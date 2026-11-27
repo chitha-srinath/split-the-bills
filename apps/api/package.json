@@ -18,7 +18,8 @@
     "dotenv": "^18.0.10",
     "fastify": "latest",
     "mongodb": "^7.9.1",
-    "mongoose": "^9.13.1"
+    "mongoose": "^9.13.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.0",
