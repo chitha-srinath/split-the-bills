@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
+    "composite": true,
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "strict": true,
-    "noEmit": true,
-    "isolatedModules": true
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "isolatedModules": true,
+    "outDir": "./node_modules/.cache/tsc-node/out",
+    "tsBuildInfoFile": "./node_modules/.cache/tsc-node/tsconfig.node.tsbuildinfo"
   },
   "include": ["vite.config.ts"]
 }

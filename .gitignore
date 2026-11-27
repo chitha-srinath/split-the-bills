@@ -8,3 +8,7 @@ build
 .env.*.local
 *.log
 .aidd/
+*.tsbuildinfo
+coverage/
+playwright-report/
+test-results/
