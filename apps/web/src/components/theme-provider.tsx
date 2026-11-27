@@ -14,12 +14,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-      const resolvedTheme =
-        theme === "system"
-          ? mediaQuery.matches
-            ? "dark"
-            : "light"
-          : theme;
+      const resolvedTheme = theme === "system" ? (mediaQuery.matches ? "dark" : "light") : theme;
 
       root.classList.remove("light", "dark");
       root.classList.add(resolvedTheme);

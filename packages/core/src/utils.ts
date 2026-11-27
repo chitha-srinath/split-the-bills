@@ -283,11 +283,12 @@ export function normalizeLegacyBill(raw: LegacyBillRecord): Bill {
  */
 export function detectDefaultCurrency(locales?: string | readonly string[]): string {
   const tags: string[] = [];
-  if (locales) {
+  const hasExplicitLocales = locales !== undefined;
+  if (hasExplicitLocales) {
     if (Array.isArray(locales)) {
       tags.push(...locales);
-    } else if (typeof locales === "string") {
-      tags.push(locales);
+    } else if (typeof locales === "string" && locales.trim().length > 0) {
+      tags.push(locales.trim());
     }
   } else if (typeof navigator !== "undefined") {
     if (Array.isArray(navigator.languages) && navigator.languages.length > 0) {
@@ -297,7 +298,7 @@ export function detectDefaultCurrency(locales?: string | readonly string[]): str
     }
   }
 
-  if (tags.length === 0) {
+  if (tags.length === 0 && !hasExplicitLocales) {
     try {
       const resolved = Intl.NumberFormat().resolvedOptions().locale;
       if (resolved) tags.push(resolved);
@@ -381,13 +382,16 @@ export function calculateNetBalances(bills: readonly Bill[]): NetTransfer[] {
       currencyBalances.set(currency, balanceMap);
     }
 
-    for (const split of bill.splits) {
+    const paidBy = bill.paidBy ?? bill.participants?.[0] ?? "Unknown";
+    const splits = bill.splits ?? [];
+
+    for (const split of splits) {
       if (split.settled) continue;
-      if (split.participant === bill.paidBy) continue;
+      if (split.participant === paidBy) continue;
       if (split.amount <= 0) continue;
 
       const minor = Math.round(split.amount * factor);
-      balanceMap.set(bill.paidBy, (balanceMap.get(bill.paidBy) ?? 0) + minor);
+      balanceMap.set(paidBy, (balanceMap.get(paidBy) ?? 0) + minor);
       balanceMap.set(split.participant, (balanceMap.get(split.participant) ?? 0) - minor);
     }
   }
@@ -446,22 +450,27 @@ export function calculateNetBalances(bills: readonly Bill[]): NetTransfer[] {
  * Format split details for clipboard copy / chat sharing.
  */
 export function formatSplitForChat(
-  bill: Pick<Bill, "title" | "totalAmount" | "currency" | "paidBy" | "splits"> & {
+  bill: Pick<Bill, "title" | "totalAmount"> & {
+    currency?: string;
+    paidBy?: string;
+    splits?: BillSplit[];
     group?: string | null;
   },
   locale?: string,
 ): string {
-  const formattedTotal = formatCurrency(bill.totalAmount, bill.currency, locale);
-  const lines = [`${bill.title} (${formattedTotal})`, `Paid by: ${bill.paidBy}`];
+  const currency = bill.currency || DEFAULT_CURRENCY;
+  const paidBy = bill.paidBy || "Unknown";
+  const formattedTotal = formatCurrency(bill.totalAmount, currency, locale);
+  const lines = [`${bill.title} (${formattedTotal})`, `Paid by: ${paidBy}`];
 
   if (bill.group) {
     lines.push(`Group: ${bill.group}`);
   }
 
   lines.push("");
-  for (const split of bill.splits) {
+  for (const split of bill.splits ?? []) {
     const status = split.settled ? "Settled" : "Unsettled";
-    const share = formatCurrency(split.amount, bill.currency, locale);
+    const share = formatCurrency(split.amount, currency, locale);
     lines.push(`- ${split.participant}: ${share} (${status})`);
   }
 

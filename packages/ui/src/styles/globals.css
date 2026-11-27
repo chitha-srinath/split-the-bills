@@ -8,50 +8,66 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.967 0.006 91);
-  --foreground: oklch(0.19 0.006 90);
-  --card: oklch(0.995 0.003 91);
-  --card-foreground: oklch(0.19 0.006 90);
-  --popover: oklch(0.995 0.003 91);
-  --popover-foreground: oklch(0.19 0.006 90);
-  --primary: oklch(0.2 0.006 90);
-  --primary-foreground: oklch(0.98 0.004 91);
-  --secondary: oklch(0.925 0.008 91);
-  --secondary-foreground: oklch(0.2 0.006 90);
-  --muted: oklch(0.93 0.007 91);
-  --muted-foreground: oklch(0.48 0.01 85);
-  --accent: oklch(0.91 0.19 118);
-  --accent-foreground: oklch(0.2 0.02 105);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.855 0.009 91);
-  --input: oklch(0.82 0.01 91);
-  --ring: oklch(0.2 0.006 90);
-  --radius: 0.45rem;
+  --background: oklch(0.985 0.004 260);
+  --foreground: oklch(0.165 0.015 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.165 0.015 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.165 0.015 265);
+  --primary: oklch(0.47 0.22 265);
+  --primary-foreground: oklch(0.99 0.004 260);
+  --secondary: oklch(0.94 0.012 262);
+  --secondary-foreground: oklch(0.21 0.02 265);
+  --muted: oklch(0.945 0.009 262);
+  --muted-foreground: oklch(0.44 0.02 264);
+  --accent: oklch(0.9 0.19 132);
+  --accent-foreground: oklch(0.17 0.03 145);
+  --destructive: oklch(0.51 0.2 26);
+  --destructive-foreground: oklch(0.99 0.004 20);
+  --success: oklch(0.49 0.125 152);
+  --success-foreground: oklch(0.99 0.004 152);
+  --warning: oklch(0.53 0.105 68);
+  --warning-foreground: oklch(0.99 0.004 70);
+  --info: oklch(0.49 0.12 245);
+  --info-foreground: oklch(0.99 0.004 245);
+  --border: oklch(0.87 0.012 262);
+  --input: oklch(0.61 0.015 262);
+  --ring: oklch(0.47 0.22 265);
+  --radius: 0.625rem;
 }
 
 .dark {
-  --background: oklch(0.145 0.004 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.673 0.182 276.935);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.673 0.182 276.935);
+  --background: oklch(0.145 0.014 268);
+  --foreground: oklch(0.975 0.005 260);
+  --card: oklch(0.195 0.016 268);
+  --card-foreground: oklch(0.975 0.005 260);
+  --popover: oklch(0.205 0.016 268);
+  --popover-foreground: oklch(0.975 0.005 260);
+  --primary: oklch(0.72 0.135 268);
+  --primary-foreground: oklch(0.145 0.02 268);
+  --secondary: oklch(0.26 0.018 268);
+  --secondary-foreground: oklch(0.96 0.006 260);
+  --muted: oklch(0.245 0.015 268);
+  --muted-foreground: oklch(0.74 0.018 265);
+  --accent: oklch(0.87 0.19 132);
+  --accent-foreground: oklch(0.15 0.025 145);
+  --destructive: oklch(0.71 0.175 24);
+  --destructive-foreground: oklch(0.14 0.02 24);
+  --success: oklch(0.75 0.16 152);
+  --success-foreground: oklch(0.14 0.025 152);
+  --warning: oklch(0.81 0.155 80);
+  --warning-foreground: oklch(0.16 0.03 70);
+  --info: oklch(0.74 0.14 242);
+  --info-foreground: oklch(0.14 0.02 242);
+  --border: oklch(0.32 0.018 268);
+  --input: oklch(0.56 0.02 268);
+  --ring: oklch(0.72 0.135 268);
 }
 
 @theme inline {
-  --font-sans: "Segoe UI Variable Text", "Aptos", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Space Grotesk", var(--font-sans);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -67,6 +83,13 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -82,6 +105,6 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
   }
 }
